@@ -22,7 +22,7 @@ export const createUser = async(req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user = new userModel({
+        const user = new userModel.create({
             email,
             password: hashedPassword
         });
