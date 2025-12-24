@@ -35,7 +35,7 @@ export const createUser = async(req, res) => {
             { expiresIn: "1d" }
         );
 
-        //res.cookie("token", token);
+        res.cookie("token", token);
 
         return res.status(201).json({success: true, message: "User registered successfully", 
             user:{
@@ -47,6 +47,44 @@ export const createUser = async(req, res) => {
 
 
     } catch (error) {
+        console.error('Registration error:', error);
+        return res.status(500).json({success: false, message: "Internal server error"});
+    }
+}
+
+export const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    if(!email || !password){
+        return res.status(400).json({success: false, message: "All fields are required"});
+    }
+    try {
+        const user = await userModel.findOne({ email }).select('+password');
+        if(!user){
+            return res.status(400).json({success: false, message: "User does not exist"});
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if(!isPasswordValid){
+            return res.status(400).json({success: false, message: "Invalid credentials"});
+        }
+
+        const token = jwt.sign({ 
+            email: user.email}, 
+            config.Jwt_secret, 
+            { expiresIn: "1d" }
+        );
+
+        res.cookie("token", token);
+
+        return res.status(200).json({success: true, message: "User logged in successfully",
+            user:{ 
+                id: user._id,
+                email: user.email 
+            }, 
+        });
+    } catch (error) {
+        console.error('Login error:', error);
         return res.status(500).json({success: false, message: "Internal server error"});
     }
 }
