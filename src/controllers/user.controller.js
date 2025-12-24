@@ -2,6 +2,7 @@ import userModel from '../models/user.model.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {config} from '../config/env.js';
+import { authUser } from '../middleware/auth.middleware.js';
 
 export const createUser = async(req, res) => {
     const { email, password } = req.body;
@@ -82,9 +83,15 @@ export const login = async (req, res) => {
                 id: user._id,
                 email: user.email 
             }, 
+            token
         });
     } catch (error) {
         console.error('Login error:', error);
         return res.status(500).json({success: false, message: "Internal server error"});
     }
+}
+
+export const getUserProfile = async (req, res) => {
+    console.log(req.user);
+    res.status(200).json({ success: true, user: req.user });
 }
