@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {config} from '../config/env.js';
 import { authUser } from '../middleware/auth.middleware.js';
+import redisClient from '../services/redis.service.js';
 
 export const createUser = async(req, res) => {
     const { email, password } = req.body;
@@ -94,4 +95,17 @@ export const login = async (req, res) => {
 export const getUserProfile = async (req, res) => {
     console.log(req.user);
     res.status(200).json({ success: true, user: req.user });
+}
+
+export const logout = async (req, res) => {
+    try{
+        const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+
+        redisClient.set(token, '', 'EX', 24 * 60 * 60);
+
+        res.status(200).json({ success: true, message: "User logged out successfully" });
+    }catch(error){
+        console.error('Logout error:', error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
 }
