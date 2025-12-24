@@ -10,8 +10,8 @@ export const createUser = async(req, res) => {
         return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    if(password.length < 6 || password.length > 8){
-        return res.status(400).json({ message: 'Password must be between 6 and 8 characters long' });
+    if(password.length < 6){
+        return res.status(400).json({ message: 'Password must be at least 6 characters long' });
     }
 
     try {
@@ -22,7 +22,7 @@ export const createUser = async(req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user = new userModel.create({
+        const user = new userModel({
             email,
             password: hashedPassword
         });
@@ -38,7 +38,10 @@ export const createUser = async(req, res) => {
         //res.cookie("token", token);
 
         return res.status(201).json({success: true, message: "User registered successfully", 
-            user, 
+            user:{
+                email: user.email,
+                id: user._id
+            },
             token
         });
 
