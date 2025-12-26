@@ -11,6 +11,7 @@ export const authUser = async (req, res, next) => {
 
     const isBlacklisted = await redisClient.get(`blacklist_${token}`);
     if (isBlacklisted) {
+        res.cookies('token', " ");
         return res.status(401).json({ success: false, message: "Token has been revoked" });
     }
 

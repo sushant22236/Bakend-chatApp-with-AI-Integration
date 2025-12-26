@@ -99,9 +99,9 @@ export const getUserProfile = async (req, res) => {
 
 export const logout = async (req, res) => {
     try{
-        const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+        const token = req.cookies.token || req.headers.authorization.split(" ")[1];
 
-        redisClient.set(token, '', 'EX', 24 * 60 * 60);
+        redisClient.set(token, 'logout', 'EX', 24 * 60 * 60);
 
         res.status(200).json({ success: true, message: "User logged out successfully" });
     }catch(error){
