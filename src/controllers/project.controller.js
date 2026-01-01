@@ -26,3 +26,21 @@ export const createProjectController = async (req, res) => {
         return res.status(400).json({ error: error.message });
     }
 }
+
+export const getAllProjectsController = async (req, res) => {
+    try {
+        const loggedInUser = await userModel.findOne({ email: req.user.email });
+
+        if (!loggedInUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const userId = loggedInUser._id;
+        const allProjects = await projectService.getAllProjects({ userId });
+
+        return res.status(200).json({ success: true, projects: allProjects });
+    } catch (error) {
+        console.error('Error fetching projects:', error);
+        return res.status(400).json({ error: error.message });
+    }
+}
