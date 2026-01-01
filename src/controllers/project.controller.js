@@ -23,6 +23,6 @@ export const createProjectController = async (req, res) => {
         return res.status(201).json({ success: true, message: 'Project created successfully', project: newProject });
     } catch (error) {
         console.error('Error creating project:', error);
-        return res.status(500).json({ success: false, message: 'Internal server error' });
+        return res.status(400).json({ error: error.message });
     }
 }
