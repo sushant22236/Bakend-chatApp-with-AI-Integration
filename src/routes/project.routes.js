@@ -1,5 +1,10 @@
 import express from 'express';
-import { createProjectController, getAllProjectsController, addUsersToProjectController } from '../controllers/project.controller.js';
+import { 
+        createProjectController, 
+        getAllProjectsController, 
+        addUsersToProjectController ,
+        getProjectByIdController
+} from '../controllers/project.controller.js';
 import { body } from 'express-validator';
 import { authUser } from '../middleware/auth.middleware.js';
 
@@ -23,6 +28,11 @@ router.put('/add-user',
                 .custom((users) => users.every(user => typeof user === 'string'))
                 .withMessage('Each userId must be a string'),
         addUsersToProjectController
+);
+
+router.get('/get-projects/:projectId', 
+        authUser,
+        getProjectByIdController
 );
 
 export default router;
