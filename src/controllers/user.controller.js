@@ -109,3 +109,31 @@ export const logout = async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 }
+
+export const getAllUsers = async (req, res) => {
+    try {
+        // Find logged-in user
+        const loggedInUser = await userModel.findOne({
+            email: req.user.email
+        });
+
+        if (!loggedInUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Get all users except logged-in user
+        const users = await userModel.find({
+            _id: { $ne: loggedInUser._id }
+        });
+
+        return res.status(200).json({
+            users
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(400).json({
+            error: err.message
+        });
+    }
+};
