@@ -16,7 +16,6 @@ app.use(cors({
 }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 connectDB();
 
 app.use('/api/users', userRoute);
