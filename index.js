@@ -44,14 +44,20 @@ io.use(async (socket, next) => {
 
 io.on('connection', socket => {
 
-    console.log('a user connected');
+  console.log('a user connected');
   socket.join(socket.project._id.toString());
+
   socket.on('project-message', data => {
     socket.broadcast.to(socket.project._id.toString()).emit('project-message', data);
   })
-  socket.on('event', data => { /* … */ });
-  socket.on('disconnect', () => { /* … */ });
+  
+  socket.on('disconnect', () => { 
+    console.log('user disconnected');
+    socket.leave(socket.project._id.toString());
+
+   });
 });
+
 
 
 server.listen(config.port, () => {
