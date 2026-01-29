@@ -9,5 +9,6 @@ export const config = {
         host: process.env.REDIS_HOST || " ",
         port: process.env.REDIS_PORT || " ",
         password: process.env.REDIS_PASSWORD || " "
-    }
+    },
+    Google_AI_Key: process.env.GOOGLE_AI_KEY || " "
 }
