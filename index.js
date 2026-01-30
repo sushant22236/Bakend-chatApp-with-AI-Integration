@@ -5,6 +5,7 @@ import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken'; 
 import mongoose from 'mongoose'; 
 import projectModel from './src/models/project.model.js';
+import { send } from 'process';
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -48,6 +49,19 @@ io.on('connection', socket => {
   socket.join(socket.project._id.toString());
 
   socket.on('project-message', data => {
+
+    const message = data.message;
+
+    const aiIsPresentInMessage = message.includes('@AI');
+
+    if(aiIsPresentInMessage){
+        socket.emit('project-message', {
+            sender: data.sender,
+            message: "Ai is present in the message"
+        })
+        return;
+    }
+
     socket.broadcast.to(socket.project._id.toString()).emit('project-message', data);
   })
   

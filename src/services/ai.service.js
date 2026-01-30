@@ -1,9 +1,13 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import {config} from '../config/env.js';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+console.log("Google AI Key:", config.Google_AI_Key);
+
+const genAI = new GoogleGenerativeAI(config.Google_AI_Key);
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
+  model: "gemini-3-flash-preview",
+  systemInstruction: `You are an expert in MERN and Development. You have an experience of 10 years in the development. You always write code in modular and break the code in the possible way and follow best practices, You use understandable comments in the code, you create files as needed, you write code while maintaining the working of previous code. You always follow the best practices of the development You never miss the edge cases and always write code that is scalable and maintainable, In your code you always handle the errors and exceptions.`
 });
 
 export async function generateAIResponse(prompt) {
