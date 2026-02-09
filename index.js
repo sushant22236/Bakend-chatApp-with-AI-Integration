@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose'; 
 import projectModel from './src/models/project.model.js';
 import { send } from 'process';
+import { generateAIResponse } from './src/services/ai.service.js';
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -48,17 +49,26 @@ io.on('connection', socket => {
   console.log('a user connected');
   socket.join(socket.project._id.toString());
 
-  socket.on('project-message', data => {
+  socket.on('project-message', async data => {
 
     const message = data.message;
 
     const aiIsPresentInMessage = message.includes('@AI');
 
     if(aiIsPresentInMessage){
-        socket.emit('project-message', {
-            sender: data.sender,
-            message: "Ai is present in the message"
-        })
+
+        const prompt = message.replace('@AI', '')
+
+        const result = await generateAIResponse(prompt);
+
+        io.to(socket.project._id.toString()).emit('project-message', { 
+            message: result, 
+            sender: {
+                _id: 'AI',
+                name: 'AI Assistant'
+            }
+        });
+
         return;
     }
 
