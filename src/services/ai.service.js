@@ -1,8 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import {config} from '../config/env.js';
 
-console.log("Google AI Key:", config.Google_AI_Key);
-
 const genAI = new GoogleGenerativeAI(config.Google_AI_Key);
 
 const model = genAI.getGenerativeModel({
@@ -14,3 +12,5 @@ export async function generateAIResponse(prompt) {
   const result = await model.generateContent(prompt);
   return result.response.text();
 }
+
+
